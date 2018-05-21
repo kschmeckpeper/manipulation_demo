@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Starts the RGB-D camera -->
+    <include file="$(find openni2_launch)/launch/openni2.launch"/>
+
+
+
+    <!-- Closes all the cameras and then starts the cameras on the hands with the correct resolution-->
+    <node pkg="manipulation_demo" type="init_cameras.py" name="init_cameras"/>
+
+
+    <!-- Apriltag parameters -->
+    <arg name="border_size" default="1"/>
+    <arg name="family_index" default="0"/> <!-- 0 - t36h11, 1 - t25h9, 2 - t16h5 -->
+    <arg name="type_index" default="0"/> <!-- 0-mit, 1-umich -->
+
+
+
+    <!-- Starts apriltag detection for center camera -->
+    <node pkg="apriltag_ros" type="apriltag_detector_node"
+        name="apriltag_detector" output="screen" ns="camera/rgb">
+        <param name="family" type="int" value="$(arg family_index)"/>
+        <param name="type" type="int" value="$(arg type_index)"/>
+        <param name="black_border" type="int" value="$(arg border_size)"/>
+
+        <remap from="~image" to="image_raw"/>
+        <remap from="~tags" to="tags"/>
+        <remap from="~disp" to="disp"/>
+    </node>
+
+    <node pkg="apriltag_ros" name="apriltag_pose_estimator"
+        type="apriltag_pose_estimator" output="screen" ns="camera/rgb">
+        <remap from="~apriltags" to="tags"/>
+        <remap from="~camera_info" to="camera_info"/>
+        <remap from="~transform" to="transform_cam_apriltag"/>
+        <param name="broadcast_tf" type="bool" value="true"/>
+        <param name="auto_disconnect" type="bool" value="false"/>
+        <rosparam param="tag_descriptions">[
+            {id: 78, size: 0.11, frame_id: tag_78},
+            {id: 79, size: 0.11, frame_id: tag_79},
+            {id: 80, size: 0.11, frame_id: tag_80},
+            {id: 81, size: 0.11, frame_id: tag_81},
+            {id: 82, size: 0.11, frame_id: tag_82},
+            {id: 83, size: 0.11, frame_id: tag_83}]
+        </rosparam>
+    </node>
+
+
+    <!-- Starts apriltag detection for right hand camera -->
+    <node pkg="apriltag_ros" type="apriltag_detector_node"
+        name="apriltag_detector" output="screen" ns="cameras/right_hand_camera">
+        <param name="family" type="int" value="$(arg family_index)"/>
+        <param name="type" type="int" value="$(arg type_index)"/>
+        <param name="black_border" type="int" value="$(arg border_size)"/>
+
+        <remap from="~image" to="image"/>
+        <remap from="~tags" to="tags"/>
+        <remap from="~disp" to="disp"/>
+    </node>
+
+    <node pkg="apriltag_ros" name="apriltag_pose_estimator"
+        type="apriltag_pose_estimator" output="screen" ns="cameras/right_hand_camera">
+        <remap from="~apriltags" to="tags"/>
+        <remap from="~camera_info" to="camera_info"/>
+        <remap from="~transform" to="transform_cam_apriltag"/>
+        <param name="broadcast_tf" type="bool" value="true"/>
+        <param name="auto_disconnect" type="bool" value="false"/>
+        <rosparam param="tag_descriptions">[
+            {id: 78, size: 0.11, frame_id: tag_78_right},
+            {id: 79, size: 0.11, frame_id: tag_79_right},
+            {id: 80, size: 0.11, frame_id: tag_80_right},
+            {id: 81, size: 0.11, frame_id: tag_81_right},
+            {id: 82, size: 0.11, frame_id: tag_82_right},
+            {id: 83, size: 0.11, frame_id: tag_83_right}]
+        </rosparam>
+    </node>
+
+
+    <!-- Starts apriltag detection for left hand camera -->
+    <node pkg="apriltag_ros" type="apriltag_detector_node"
+        name="apriltag_detector" output="screen" ns="cameras/left_hand_camera">
+        <param name="family" type="int" value="$(arg family_index)"/>
+        <param name="type" type="int" value="$(arg type_index)"/>
+        <param name="black_border" type="int" value="$(arg border_size)"/>
+
+        <remap from="~image" to="image"/>
+        <remap from="~tags" to="tags"/>
+        <remap from="~disp" to="disp"/>
+    </node>
+
+    <node pkg="apriltag_ros" name="apriltag_pose_estimator"
+        type="apriltag_pose_estimator" output="screen" ns="cameras/left_hand_camera">
+        <remap from="~apriltags" to="tags"/>
+        <remap from="~camera_info" to="camera_info"/>
+        <remap from="~transform" to="transform_cam_apriltag"/>
+        <param name="broadcast_tf" type="bool" value="true"/>
+        <param name="auto_disconnect" type="bool" value="false"/>
+        <rosparam param="tag_descriptions">[
+            {id: 78, size: 0.11, frame_id: tag_78_left},
+            {id: 79, size: 0.11, frame_id: tag_79_left},
+            {id: 80, size: 0.11, frame_id: tag_80_left},
+            {id: 81, size: 0.11, frame_id: tag_81_left},
+            {id: 82, size: 0.11, frame_id: tag_82_left},
+            {id: 83, size: 0.11, frame_id: tag_83_left},
+            {id: 84, size: 0.11, frame_id: tag_84_left}]
+        </rosparam>
+    </node>
+
+
+</launch>

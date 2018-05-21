@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="baxter_interface" type="joint_trajectory_action_server.py" name="joint_trajectory_action_server" output="screen"/>
+
+    <node pkg="baxter_interface" type="gripper_action_server.py" name="gripper_action_server" output="screen"/>
+
+    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="30.0" />
+        <rosparam param="/source_list"> [/robot/joint_states] </rosparam>
+    </node>
+</launch>
