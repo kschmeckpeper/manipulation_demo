@@ -1,11 +1,25 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="baxter_interface" type="joint_trajectory_action_server.py" name="joint_trajectory_action_server" output="screen"/>
+    <node pkg="tf" type="static_transform_publisher" name="head_fixer_1" args="0 0 0 3.14 0 0 head_camera head_camera_fixed_1 10" />
+    <node pkg="tf" type="static_transform_publisher" name="head_fixer" args="0 0 0 0 -.2 0 head_camera_fixed_1 head_camera_fixed 10" />
+    <!--<node pkg="tf" type="static_transform_publisher" name="head_fixer" args="0 0 0 3.14 0 0 head_camera head_camera_fixed 10" />-->
+    <!--<node pkg="manipulation_demo" type="init_cameras.sh" name="init_cameras"/>-->
 
+
+    <node pkg="baxter_interface" type="joint_trajectory_action_server.py" name="joint_trajectory_action_server" output="screen"/>
     <node pkg="baxter_interface" type="gripper_action_server.py" name="gripper_action_server" output="screen"/>
+    <!--<node pkg="baxter_interface" type="head_action_server.py" name="head_action_server" output="screen"/>-->
 
     <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
         <param name="publish_frequency" type="double" value="30.0" />
         <rosparam param="/source_list"> [/robot/joint_states] </rosparam>
     </node>
+
+    <include file="$(find baxter_moveit_config)/launch/planning_context.launch"/>
+
+    <include file="$(find baxter_moveit_config)/launch/move_group.launch">
+        <arg name="allow_trajectory_execution" value="true"/>
+        <arg name="fake_execution" value="false"/>
+        <arg name="info" value="true"/>
+    </include>
 </launch>
